@@ -98,6 +98,10 @@ class RTCRtpSender:
         self.__cname: Optional[str] = None
         self._ssrc = random32()
         self._rtx_ssrc = random32()
+        #: RTP timestamp of media position 0, minted when the RTP loop starts.
+        #: The wire timestamp of a frame is this value plus the frame's
+        #: (encoder-timebase) timestamp. `None` until sending starts.
+        self.timestamp_origin: Optional[int] = None
         # FIXME: how should this be initialised?
         self._stream_id = str(uuid.uuid4())
         self._enabled = True
@@ -360,6 +364,7 @@ class RTCRtpSender:
 
         sequence_number = random_sequence_number()
         timestamp_origin = random32()
+        self.timestamp_origin = timestamp_origin
         try:
             while True:
                 if not self.__track:
